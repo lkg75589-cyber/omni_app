@@ -1,0 +1,59 @@
+
+name: Build OMNI APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get project files
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Prepare project structure
+        run: |
+          mkdir -p lib
+          if [ -f main.dart ] && [ ! -f lib/main.dart ]; then
+            mv main.dart lib/main.dart
+          fi
+          mkdir -p scripts
+          if [ -f configure_android.py ]; then
+            cp configure_android.py scripts/configure_android.py
+          fi
+
+      - name: Generate Android files
+        run: flutter create --platforms=android --org com.omni.toolbox --project-name omni .
+
+      - name: Configure Android
+        run: python3 scripts/configure_android.py
+
+      - name: Install packages
+        run: flutter pub get
+
+      - name: Analyze project
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: omni-android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
