@@ -1,0 +1,27 @@
+name: omni
+description: OMNI - a polished all-in-one toolbox for Android.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: '>=3.13.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_animate: ^4.5.2
+  lucide_icons_flutter: ^4.0.1
+  shared_preferences: ^2.5.6
+  mobile_scanner: ^7.4.2
+  qr_flutter: ^4.1.0
+  file_picker: ^13.3.0
+  pdfrx: ^2.11.0
+  http: ^1.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
